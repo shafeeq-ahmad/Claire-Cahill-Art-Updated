@@ -1,0 +1,196 @@
+{%- liquid
+  assign handles = ''
+  assign menu = section.settings.menu
+  if menu != blank
+    for link in menu.links
+      if link.type == 'collection_link' and link.object.handle != 'all'
+        assign handles = handles | append: link.object.handle | append: ','
+      endif
+      for child in link.links
+        if child.type == 'collection_link' and child.object.handle != 'all'
+          assign handles = handles | append: child.object.handle | append: ','
+        endif
+        for grandchild in child.links
+          if grandchild.type == 'collection_link' and grandchild.object.handle != 'all'
+            assign handles = handles | append: grandchild.object.handle | append: ','
+          endif
+        endfor
+      endfor
+    endfor
+  endif
+  assign handles = handles | split: ',' | uniq
+
+  assign is_all = false
+  if collection.handle == 'all' or collection.handle == blank
+    assign is_all = true
+  endif
+
+  assign title = collection.title
+  if is_all and section.settings.all_title != blank
+    assign title = section.settings.all_title
+  endif
+-%}
+
+<div class="section-background color-{{ section.settings.color_scheme }}"></div>
+<div
+  class="section section--page-width color-{{ section.settings.color_scheme }} cc-section cc-collection-header"
+  style="--cc-pad-top: {{ section.settings.padding_top }}px; --cc-pad-bottom: {{ section.settings.padding_bottom }}px;"
+>
+  <div class="cc-collection-header__inner">
+    <h1 class="cc-heading cc-heading--xl">{{ title | escape }}</h1>
+
+    {%- if is_all -%}
+      {%- if section.settings.all_text != blank -%}
+        <div class="cc-lede">{{ section.settings.all_text }}</div>
+      {%- endif -%}
+    {%- elsif collection.description != blank -%}
+      <div class="cc-lede">{{ collection.description }}</div>
+    {%- endif -%}
+
+    {%- if handles.size > 0 -%}
+      <nav class="cc-rooms-nav" aria-label="Gallery rooms">
+        <ul class="cc-rooms-nav__list" role="list">
+          <li>
+            <a
+              class="cc-rooms-nav__link"
+              href="{{ routes.all_products_collection_url }}"
+              {% if is_all %}aria-current="page"{% endif %}
+            >
+              {{- section.settings.all_label | escape -}}
+            </a>
+          </li>
+          {%- for handle in handles -%}
+            {%- assign room = collections[handle] -%}
+            {%- if room.handle == blank -%}{%- continue -%}{%- endif -%}
+            <li>
+              <a
+                class="cc-rooms-nav__link"
+                href="{{ room.url }}"
+                {% if room.handle == collection.handle %}aria-current="page"{% endif %}
+              >
+                {{- room.title -}}
+              </a>
+            </li>
+          {%- endfor -%}
+        </ul>
+      </nav>
+    {%- endif -%}
+  </div>
+</div>
+
+{% stylesheet %}
+  .cc-collection-header__inner {
+    display: grid;
+    gap: var(--cc-space-3);
+  }
+
+  .cc-rooms-nav {
+    margin-top: var(--cc-space-2);
+  }
+
+  .cc-rooms-nav__list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem 1.75rem;
+  }
+
+  .cc-rooms-nav__link {
+    display: inline-block;
+    padding-block: 0.35rem;
+    color: var(--cc-label);
+    text-decoration: none;
+    font-size: 1rem;
+    border-bottom: 1px solid transparent;
+  }
+
+  .cc-rooms-nav__link:hover {
+    color: var(--cc-ink);
+    border-bottom-color: var(--cc-rule);
+  }
+
+  .cc-rooms-nav__link[aria-current='page'] {
+    color: var(--cc-ink);
+    border-bottom-color: var(--cc-ink);
+  }
+
+  .cc-rooms-nav__link:focus-visible {
+    outline: 2px solid var(--cc-navy);
+    outline-offset: 3px;
+  }
+
+  @media screen and (max-width: 749px) {
+    .cc-rooms-nav__list {
+      flex-wrap: nowrap;
+      overflow-x: auto;
+      scrollbar-width: none;
+      max-width: 100%;
+    }
+
+    .cc-rooms-nav__list > li { flex: none; }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Gallery heading",
+  "settings": [
+    {
+      "type": "link_list",
+      "id": "menu",
+      "label": "Rooms menu",
+      "info": "Collections in this menu appear as room links.",
+      "default": "main-menu"
+    },
+    {
+      "type": "text",
+      "id": "all_label",
+      "label": "Label for all pieces",
+      "default": "Everything"
+    },
+    {
+      "type": "text",
+      "id": "all_title",
+      "label": "Title on the all-products page",
+      "default": "The gallery"
+    },
+    {
+      "type": "richtext",
+      "id": "all_text",
+      "label": "Introduction on the all-products page",
+      "default": "<p>Every original, print and keepsake in one place. Choose a room to narrow it down.</p>"
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "Color scheme",
+      "default": "scheme-1"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "label": "Top padding",
+      "min": 0,
+      "max": 160,
+      "step": 8,
+      "unit": "px",
+      "default": 48
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "label": "Bottom padding",
+      "min": 0,
+      "max": 160,
+      "step": 8,
+      "unit": "px",
+      "default": 24
+    }
+  ],
+  "enabled_on": {
+    "templates": ["collection"]
+  }
+}
+{% endschema %}

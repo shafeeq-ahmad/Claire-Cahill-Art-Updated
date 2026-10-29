@@ -1,0 +1,217 @@
+/*
+  Claire Cahill Art: gallery layer on top of Horizon.
+  Tokens, wall-label captions, and quiet overrides for the stock collection grid.
+  Section-specific styles live in each cc-*.liquid section.
+*/
+
+:root {
+  --cc-paper: #ffffff;
+  --cc-wall: #f4f4f2;
+  --cc-ink: #2a2826;
+  --cc-label: #6e6a65;
+  --cc-navy: #24385a;
+  --cc-rule: #e4e2de;
+
+  --cc-space-1: 0.5rem;
+  --cc-space-2: 1rem;
+  --cc-space-3: 1.5rem;
+  --cc-space-4: 2.5rem;
+  --cc-space-5: 4rem;
+  --cc-space-6: 6.5rem;
+
+  --cc-measure: 34rem;
+}
+
+/* ---------- shared pieces used by cc- sections ---------- */
+
+.cc-section {
+  padding-block: calc(var(--cc-pad-top, 64px) * 0.6) calc(var(--cc-pad-bottom, 64px) * 0.6);
+}
+
+@media screen and (min-width: 750px) {
+  .cc-section {
+    padding-block: calc(var(--cc-pad-top, 64px) * 0.8) calc(var(--cc-pad-bottom, 64px) * 0.8);
+  }
+}
+
+@media screen and (min-width: 990px) {
+  .cc-section {
+    padding-block: var(--cc-pad-top, var(--cc-space-6)) var(--cc-pad-bottom, var(--cc-space-6));
+  }
+}
+
+.cc-heading {
+  font-family: var(--font-heading--family);
+  font-weight: var(--font-heading--weight);
+  font-style: var(--font-heading--style);
+  color: var(--cc-ink);
+  line-height: 1.08;
+  letter-spacing: -0.005em;
+  margin: 0;
+  text-wrap: balance;
+}
+
+.cc-heading--xl { font-size: clamp(2.75rem, 7vw, 5.25rem); line-height: 0.98; }
+.cc-heading--l { font-size: clamp(2rem, 4vw, 2.875rem); }
+.cc-heading--m { font-size: clamp(1.5rem, 2.6vw, 1.875rem); }
+
+.cc-lede {
+  font-size: 1.125rem;
+  line-height: 1.6;
+  color: var(--cc-ink);
+  max-width: var(--cc-measure);
+  margin: 0;
+  text-wrap: pretty;
+}
+
+.cc-prose {
+  max-width: var(--cc-measure);
+  line-height: 1.7;
+  color: var(--cc-ink);
+}
+
+.cc-prose > * + * { margin-top: 1em; }
+.cc-prose p { margin: 0; }
+.cc-prose p + p { margin-top: 1em; }
+
+.cc-section-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--cc-space-2) var(--cc-space-4);
+  margin-bottom: var(--cc-space-4);
+}
+
+.cc-section-head__note {
+  color: var(--cc-label);
+  max-width: 28rem;
+  margin: 0;
+}
+
+.cc-link {
+  color: var(--cc-navy);
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.3em;
+  font-weight: 500;
+}
+
+.cc-link:hover { color: var(--cc-ink); }
+
+.cc-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--cc-space-2) var(--cc-space-3);
+}
+
+/* Matted image: art sits on a pale wall tone so mixed photo backgrounds read as one collection */
+.cc-mat {
+  position: relative;
+  display: block;
+  background: var(--cc-wall);
+  overflow: hidden;
+  aspect-ratio: var(--cc-ratio, 4 / 5);
+}
+
+.cc-mat img,
+.cc-mat svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: var(--cc-fit, cover);
+}
+
+.cc-mat--contain { --cc-fit: contain; }
+.cc-mat--contain img { padding: 8%; }
+
+.cc-mat svg { fill: var(--cc-label); opacity: 0.35; }
+
+/* ---------- wall label: the caption under every piece ---------- */
+
+.cc-label {
+  display: grid;
+  gap: 0.2rem;
+  padding-top: 0.875rem;
+}
+
+.cc-label__title {
+  font-family: var(--font-heading--family);
+  font-weight: var(--font-heading--weight);
+  font-size: 1.1875rem;
+  line-height: 1.25;
+  color: var(--cc-ink);
+  margin: 0;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.cc-label__meta {
+  font-size: 0.875rem;
+  color: var(--cc-label);
+  margin: 0;
+}
+
+.cc-label__price {
+  font-size: 0.9375rem;
+  color: var(--cc-ink);
+  margin: 0.15rem 0 0;
+}
+
+.cc-label__original {
+  color: var(--cc-navy);
+  font-weight: 500;
+}
+
+.cc-piece {
+  display: block;
+  color: inherit;
+  text-decoration: none;
+}
+
+.cc-piece:hover .cc-label__title,
+.cc-piece:focus-visible .cc-label__title {
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.2em;
+}
+
+.cc-piece:focus-visible {
+  outline: 2px solid var(--cc-navy);
+  outline-offset: 6px;
+}
+
+.cc-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--cc-space-4) var(--cc-space-2);
+}
+
+@media screen and (min-width: 750px) {
+  .cc-grid { grid-template-columns: repeat(var(--cc-cols, 3), minmax(0, 1fr)); gap: var(--cc-space-5) var(--cc-space-4); }
+}
+
+/* ---------- quiet the stock Horizon collection grid to match ---------- */
+
+.template-collection .product-grid,
+.template-search .product-grid {
+  row-gap: var(--cc-space-4);
+}
+
+.template-collection product-card .card-gallery,
+.template-search product-card .card-gallery {
+  background: var(--cc-wall);
+}
+
+/* Horizon wraps the filter row in a rule; give it air on the gallery page */
+.template-collection .facets {
+  margin-bottom: var(--cc-space-3);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cc-piece *, .cc-room * { transition: none !important; }
+}

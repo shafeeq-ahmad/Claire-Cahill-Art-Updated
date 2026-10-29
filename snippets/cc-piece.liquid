@@ -1,0 +1,56 @@
+{%- doc -%}
+  One artwork or product, shown the way a gallery hangs it: matted image, then a wall label.
+
+  @param {product} product - The product to show
+  @param {string} [ratio] - CSS aspect ratio for the mat, e.g. '4 / 5'
+  @param {boolean} [contain] - Show the whole image inside the mat instead of cropping
+  @param {string} [sizes] - Image sizes attribute
+
+  @example
+  {% render 'cc-piece', product: product, ratio: '4 / 5' %}
+{%- enddoc -%}
+
+{%- liquid
+  assign ratio = ratio | default: '4 / 5'
+  assign sizes = sizes | default: '(min-width: 990px) 30vw, (min-width: 750px) 45vw, 50vw'
+  assign image = product.featured_media.preview_image
+  assign alt = image.alt | default: product.title
+  assign is_original = false
+  if product.tags contains 'original'
+    assign is_original = true
+  endif
+-%}
+
+<a class="cc-piece" href="{{ product.url }}">
+  <span class="cc-mat{% if contain %} cc-mat--contain{% endif %}" style="--cc-ratio: {{ ratio }};">
+    {%- if image -%}
+      {{
+        image
+        | image_url: width: 1200
+        | image_tag: loading: 'lazy', sizes: sizes, widths: '360, 540, 720, 960, 1200', alt: alt
+      }}
+    {%- else -%}
+      {{ 'product-1' | placeholder_svg_tag }}
+    {%- endif -%}
+  </span>
+  <span class="cc-label">
+    <span class="cc-label__title">{{ product.title }}</span>
+    {%- if is_original or product.type != blank -%}
+      <span class="cc-label__meta">
+        {%- if is_original -%}
+          <span class="cc-label__original">Original, one of a kind</span>
+        {%- else -%}
+          {{ product.type }}
+        {%- endif -%}
+      </span>
+    {%- endif -%}
+    <span class="cc-label__price">
+      {%- if product.price_varies -%}
+        From {{ product.price_min | money }}
+      {%- else -%}
+        {{ product.price | money }}
+      {%- endif -%}
+      {%- unless product.available %}, sold{% endunless -%}
+    </span>
+  </span>
+</a>

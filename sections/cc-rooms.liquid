@@ -1,0 +1,200 @@
+{%- comment -%}
+  Gallery rooms. Reads collections from a menu (the main menu by default), including
+  collections nested under a "Gallery" dropdown. Adding a new room is: create an automated
+  collection for its tag, add it to the menu, done. Falls back to the collection list setting.
+{%- endcomment -%}
+
+{%- liquid
+  assign handles = ''
+  assign menu = section.settings.menu
+  if menu != blank
+    for link in menu.links
+      if link.type == 'collection_link' and link.object.handle != 'all'
+        assign handles = handles | append: link.object.handle | append: ','
+      endif
+      for child in link.links
+        if child.type == 'collection_link' and child.object.handle != 'all'
+          assign handles = handles | append: child.object.handle | append: ','
+        endif
+        for grandchild in child.links
+          if grandchild.type == 'collection_link' and grandchild.object.handle != 'all'
+            assign handles = handles | append: grandchild.object.handle | append: ','
+          endif
+        endfor
+      endfor
+    endfor
+  endif
+  assign handles = handles | split: ',' | uniq
+  if handles.size == 0 and section.settings.collections != blank
+    assign handles = section.settings.collections | map: 'handle'
+  endif
+-%}
+
+<div class="section-background color-{{ section.settings.color_scheme }}"></div>
+<div
+  class="section section--page-width color-{{ section.settings.color_scheme }} cc-section cc-rooms"
+  style="--cc-pad-top: {{ section.settings.padding_top }}px; --cc-pad-bottom: {{ section.settings.padding_bottom }}px;"
+>
+  <div>
+    <div class="cc-section-head">
+      <h2 class="cc-heading cc-heading--l">{{ section.settings.heading | escape }}</h2>
+      {%- if section.settings.note != blank -%}
+        <p class="cc-section-head__note">{{ section.settings.note | escape }}</p>
+      {%- endif -%}
+    </div>
+
+    {%- if handles.size > 0 -%}
+      <ul class="cc-rooms__list" style="--cc-cols: {{ section.settings.columns }};" role="list">
+        {%- for handle in handles limit: 8 -%}
+          {%- liquid
+            assign room = collections[handle]
+            assign room_image = room.featured_image
+            if room_image == blank
+              assign room_image = room.products.first.featured_media.preview_image
+            endif
+            assign count = room.all_products_count
+          -%}
+          {%- if room.handle == blank -%}{%- continue -%}{%- endif -%}
+          <li class="cc-room">
+            <a class="cc-piece" href="{{ room.url }}">
+              <span class="cc-mat" style="--cc-ratio: {{ section.settings.ratio }};">
+                {%- if room_image -%}
+                  {{
+                    room_image
+                    | image_url: width: 1200
+                    | image_tag: loading: 'lazy', sizes: '(min-width: 750px) 30vw, 100vw', widths: '400, 600, 900, 1200', alt: room.title
+                  }}
+                {%- else -%}
+                  {{ 'collection-1' | placeholder_svg_tag }}
+                {%- endif -%}
+              </span>
+              <span class="cc-label">
+                <span class="cc-label__title cc-room__title">{{ room.title }}</span>
+                <span class="cc-label__meta">
+                  {%- if count == 1 -%}1 piece{%- else -%}{{ count }} pieces{%- endif -%}
+                </span>
+              </span>
+            </a>
+          </li>
+        {%- endfor -%}
+      </ul>
+    {%- elsif request.design_mode -%}
+      <p class="cc-section-head__note">
+        Choose a menu that contains your gallery collections, or pick collections below.
+      </p>
+    {%- endif -%}
+  </div>
+</div>
+
+{% stylesheet %}
+  .cc-rooms__list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--cc-space-4);
+  }
+
+  @media screen and (min-width: 750px) {
+    .cc-rooms__list {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: var(--cc-space-5) var(--cc-space-4);
+    }
+  }
+
+  @media screen and (min-width: 1100px) {
+    .cc-rooms__list {
+      grid-template-columns: repeat(var(--cc-cols, 3), minmax(0, 1fr));
+    }
+  }
+
+  .cc-room__title {
+    font-size: 1.5rem;
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Gallery rooms",
+  "settings": [
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "The gallery rooms"
+    },
+    {
+      "type": "text",
+      "id": "note",
+      "label": "Short note",
+      "default": "Each room gathers one body of work: the originals, and the prints and keepsakes made from them."
+    },
+    {
+      "type": "link_list",
+      "id": "menu",
+      "label": "Rooms menu",
+      "info": "Every collection in this menu becomes a room, including ones nested under a dropdown.",
+      "default": "main-menu"
+    },
+    {
+      "type": "collection_list",
+      "id": "collections",
+      "label": "Or pick collections",
+      "info": "Used only when the menu has no collections.",
+      "limit": 8
+    },
+    {
+      "type": "select",
+      "id": "columns",
+      "label": "Rooms per row on desktop",
+      "options": [
+        { "value": "3", "label": "3" },
+        { "value": "4", "label": "4" }
+      ],
+      "default": "3"
+    },
+    {
+      "type": "select",
+      "id": "ratio",
+      "label": "Image shape",
+      "options": [
+        { "value": "4 / 5", "label": "Portrait" },
+        { "value": "1 / 1", "label": "Square" }
+      ],
+      "default": "4 / 5"
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "Color scheme",
+      "default": "scheme-1"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "label": "Top padding",
+      "min": 0,
+      "max": 160,
+      "step": 8,
+      "unit": "px",
+      "default": 64
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "label": "Bottom padding",
+      "min": 0,
+      "max": 160,
+      "step": 8,
+      "unit": "px",
+      "default": 64
+    }
+  ],
+  "presets": [
+    {
+      "name": "Gallery rooms"
+    }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,98 @@
+<div class="section-background color-{{ section.settings.color_scheme }}"></div>
+<div
+  class="section section--page-width color-{{ section.settings.color_scheme }} cc-section cc-quote"
+  style="--cc-pad-top: {{ section.settings.padding_top }}px; --cc-pad-bottom: {{ section.settings.padding_bottom }}px;"
+>
+  <figure class="cc-quote__figure cc-quote--{{ section.settings.size }}">
+    <blockquote class="cc-heading cc-quote__text">{{ section.settings.quote }}</blockquote>
+    {%- if section.settings.attribution != blank -%}
+      <figcaption class="cc-label__meta cc-quote__by">{{ section.settings.attribution | escape }}</figcaption>
+    {%- endif -%}
+  </figure>
+</div>
+
+{% stylesheet %}
+  .cc-quote__figure {
+    margin: 0;
+    max-width: 50rem;
+    display: grid;
+    gap: var(--cc-space-3);
+  }
+
+  .cc-quote__text {
+    margin: 0;
+    font-size: clamp(1.75rem, 3.6vw, 2.75rem);
+    line-height: 1.2;
+  }
+
+  .cc-quote__text p { margin: 0; }
+
+  .cc-quote--small .cc-quote__text {
+    font-size: clamp(1.375rem, 2.4vw, 1.75rem);
+    line-height: 1.3;
+  }
+
+  .cc-quote__by {
+    font-size: 0.9375rem;
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Quote",
+  "settings": [
+    {
+      "type": "richtext",
+      "id": "quote",
+      "label": "Quote",
+      "default": "<p>Add a quote here.</p>"
+    },
+    {
+      "type": "text",
+      "id": "attribution",
+      "label": "Attribution"
+    },
+    {
+      "type": "select",
+      "id": "size",
+      "label": "Size",
+      "options": [
+        { "value": "large", "label": "Large" },
+        { "value": "small", "label": "Small" }
+      ],
+      "default": "large"
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "Color scheme",
+      "default": "scheme-1"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "label": "Top padding",
+      "min": 0,
+      "max": 160,
+      "step": 8,
+      "unit": "px",
+      "default": 64
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "label": "Bottom padding",
+      "min": 0,
+      "max": 160,
+      "step": 8,
+      "unit": "px",
+      "default": 64
+    }
+  ],
+  "presets": [
+    {
+      "name": "Quote"
+    }
+  ]
+}
+{% endschema %}

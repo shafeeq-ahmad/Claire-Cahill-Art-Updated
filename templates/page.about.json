@@ -1,0 +1,132 @@
+{
+  "sections": {
+    "intro": {
+      "type": "cc-feature",
+      "settings": {
+        "image": "",
+        "caption": "",
+        "image_side": "left",
+        "image_size": "large",
+        "ratio": "4 / 5",
+        "contain": false,
+        "heading": "About Claire",
+        "is_page_title": true,
+        "text": "<p>Claire Cahill is a painter who works mostly in acrylic, with oils from time to time. For years her originals went straight from the easel to friends and people in her community.</p><p>Their encouragement is why this gallery exists. In her words, the support from people who loved her art inspired her to keep following it and see where it goes.</p>",
+        "link_label": "",
+        "link_url": "",
+        "link_style": "link",
+        "color_scheme": "scheme-1",
+        "padding_top": 48,
+        "padding_bottom": 80
+      }
+    },
+    "flag": {
+      "type": "cc-feature",
+      "settings": {
+        "image": "shopify://shop_images/IMG_0380.jpg",
+        "caption": "American Flag, acrylic paint skins in a 5×7 acrylic block",
+        "image_side": "right",
+        "image_size": "medium",
+        "ratio": "4 / 5",
+        "contain": false,
+        "heading": "A flag for America’s 250th",
+        "is_page_title": false,
+        "text": "<p>For the nation’s 250th birthday Claire made an original flag from acrylic paint skins, layered into a high-texture surface. The original art is set inside a 5×7 acrylic block.</p><p>High-resolution prints of the flag are available too, for anyone who wants it on their wall.</p>",
+        "link_label": "See the flag pieces",
+        "link_url": "shopify://collections/the-patriot-heritage-collection",
+        "link_style": "link",
+        "color_scheme": "scheme-1",
+        "padding_top": 80,
+        "padding_bottom": 80
+      }
+    },
+    "supporter": {
+      "type": "cc-feature",
+      "settings": {
+        "image": "",
+        "caption": "",
+        "image_side": "left",
+        "image_size": "small",
+        "ratio": "1 / 1",
+        "contain": true,
+        "heading": "Recognized by Tunnel to Towers",
+        "is_page_title": false,
+        "text": "<p>The Tunnel to Towers Foundation reviewed Claire and her flag art and gave her a special designation as an official supporter.</p>",
+        "link_label": "",
+        "link_url": "",
+        "link_style": "link",
+        "color_scheme": "scheme-2",
+        "padding_top": 80,
+        "padding_bottom": 80
+      }
+    },
+    "techniques": {
+      "type": "cc-techniques",
+      "settings": {
+        "heading": "How the work is made",
+        "note": "",
+        "color_scheme": "scheme-1",
+        "padding_top": 80,
+        "padding_bottom": 80
+      },
+      "blocks": {
+        "skins": {
+          "type": "technique",
+          "settings": {
+            "name": "Acrylic paint skins",
+            "image": "shopify://shop_images/IMG_0388.jpg",
+            "text": "<p>Dried skins of acrylic paint, layered into a high-texture surface. This is how Claire made her flag for America’s 250th birthday.</p>"
+          }
+        },
+        "chaos": {
+          "type": "technique",
+          "settings": {
+            "name": "Palette knife and the chaos layer",
+            "image": "",
+            "text": "<p>Paint applied with a palette knife, finished with a layer Claire calls the chaos layer. She uses this technique for the designs on her merchandise.</p>"
+          }
+        },
+        "acrylic": {
+          "type": "technique",
+          "settings": {
+            "name": "Acrylic and oil",
+            "image": "",
+            "text": "<p>Most of Claire’s paintings are acrylic, with oils from time to time.</p>"
+          }
+        }
+      },
+      "block_order": [
+        "skins",
+        "chaos",
+        "acrylic"
+      ]
+    },
+    "close": {
+      "type": "cc-feature",
+      "settings": {
+        "image": "",
+        "caption": "",
+        "image_side": "left",
+        "image_size": "medium",
+        "ratio": "4 / 5",
+        "contain": false,
+        "heading": "See the work",
+        "is_page_title": false,
+        "text": "<p>Originals, prints and keepsakes, gathered into rooms by theme.</p>",
+        "link_label": "Visit the gallery",
+        "link_url": "shopify://collections/all",
+        "link_style": "button",
+        "color_scheme": "scheme-1",
+        "padding_top": 64,
+        "padding_bottom": 112
+      }
+    }
+  },
+  "order": [
+    "intro",
+    "flag",
+    "supporter",
+    "techniques",
+    "close"
+  ]
+}

@@ -1,0 +1,162 @@
+<div class="section-background color-{{ section.settings.color_scheme }}"></div>
+<div
+  class="section section--page-width color-{{ section.settings.color_scheme }} cc-section cc-techniques"
+  style="--cc-pad-top: {{ section.settings.padding_top }}px; --cc-pad-bottom: {{ section.settings.padding_bottom }}px;"
+>
+  <div>
+    <div class="cc-section-head">
+      <h2 class="cc-heading cc-heading--l">{{ section.settings.heading | escape }}</h2>
+      {%- if section.settings.note != blank -%}
+        <p class="cc-section-head__note">{{ section.settings.note | escape }}</p>
+      {%- endif -%}
+    </div>
+
+    <ul class="cc-techniques__list" role="list">
+      {%- for block in section.blocks -%}
+        <li class="cc-technique" {{ block.shopify_attributes }}>
+          {%- assign alt = block.settings.image.alt | default: block.settings.name -%}
+          {%- if block.settings.image != blank -%}
+            <span class="cc-mat cc-technique__mat" style="--cc-ratio: 1 / 1;">
+              {{
+                block.settings.image
+                | image_url: width: 600
+                | image_tag: loading: 'lazy', sizes: '(min-width: 750px) 140px, 96px', widths: '200, 300, 450, 600', alt: alt
+              }}
+            </span>
+          {%- endif -%}
+          <div class="cc-technique__body">
+            <h3 class="cc-heading cc-heading--m">{{ block.settings.name | escape }}</h3>
+            <div class="cc-technique__text">{{ block.settings.text }}</div>
+          </div>
+        </li>
+      {%- endfor -%}
+    </ul>
+  </div>
+</div>
+
+{% stylesheet %}
+  .cc-techniques__list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: grid;
+    gap: var(--cc-space-4);
+  }
+
+  @media screen and (min-width: 990px) {
+    .cc-techniques__list {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: var(--cc-space-5) var(--cc-space-6);
+    }
+  }
+
+  .cc-technique {
+    display: grid;
+    grid-template-columns: 96px minmax(0, 1fr);
+    gap: var(--cc-space-3);
+    align-items: start;
+    padding-top: var(--cc-space-3);
+    border-top: 1px solid var(--cc-rule);
+  }
+
+  .cc-technique:not(:has(.cc-technique__mat)) {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  @media screen and (min-width: 750px) {
+    .cc-technique { grid-template-columns: 140px minmax(0, 1fr); }
+  }
+
+  .cc-technique__body {
+    display: grid;
+    gap: var(--cc-space-1);
+  }
+
+  .cc-technique__text {
+    margin: 0;
+    line-height: 1.7;
+    max-width: var(--cc-measure);
+  }
+
+  .cc-technique__text p { margin: 0; }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Techniques",
+  "settings": [
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "How the work is made"
+    },
+    {
+      "type": "text",
+      "id": "note",
+      "label": "Short note"
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "Color scheme",
+      "default": "scheme-1"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "label": "Top padding",
+      "min": 0,
+      "max": 160,
+      "step": 8,
+      "unit": "px",
+      "default": 64
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "label": "Bottom padding",
+      "min": 0,
+      "max": 160,
+      "step": 8,
+      "unit": "px",
+      "default": 64
+    }
+  ],
+  "blocks": [
+    {
+      "type": "technique",
+      "name": "Technique",
+      "settings": [
+        {
+          "type": "text",
+          "id": "name",
+          "label": "Name",
+          "default": "Technique"
+        },
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Close-up image",
+          "info": "A detail shot showing the texture works best."
+        },
+        {
+          "type": "richtext",
+          "id": "text",
+          "label": "Description",
+          "default": "<p>Describe how this technique is done and what it adds.</p>"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Techniques",
+      "blocks": [
+        { "type": "technique" },
+        { "type": "technique" }
+      ]
+    }
+  ]
+}
+{% endschema %}
