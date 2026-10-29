@@ -5,7 +5,82 @@
     assign img = pictured.featured_media.preview_image
   endif
   assign alt = img.alt | default: section.settings.caption | default: section.settings.heading
+  assign is_full = false
+  if section.settings.layout == 'full'
+    assign is_full = true
+  endif
+  assign img_mobile = section.settings.image_mobile | default: img
+  assign focal_style = ''
+  if img.presentation.focal_point != blank
+    assign focal_style = 'object-position: ' | append: img.presentation.focal_point
+  endif
 -%}
+
+{%- if is_full -%}
+  <div class="section-background color-{{ section.settings.color_scheme }}"></div>
+  <div
+    class="section section--full-width cc-hero cc-hero--full cc-hero--{{ section.settings.height }} cc-hero--{{ section.settings.text_position }}"
+    style="--cc-overlay: {{ section.settings.overlay | divided_by: 100.0 }};"
+  >
+    <div class="cc-hero__stage">
+      {%- if img != blank -%}
+        <picture class="cc-hero__bg">
+          {%- if section.settings.image_mobile != blank -%}
+            <source
+              media="(max-width: 749px)"
+              srcset="{{ img_mobile | image_url: width: 750 }} 750w, {{ img_mobile | image_url: width: 1100 }} 1100w, {{ img_mobile | image_url: width: 1500 }} 1500w"
+              sizes="100vw"
+            >
+          {%- endif -%}
+          {{
+            img
+            | image_url: width: 3000
+            | image_tag:
+              loading: 'eager',
+              fetchpriority: 'high',
+              sizes: '100vw',
+              widths: '750, 1100, 1500, 2000, 2500, 3000',
+              alt: alt,
+              style: focal_style
+          }}
+        </picture>
+      {%- else -%}
+        <div class="cc-hero__bg">{{ 'hero-apparel-1' | placeholder_svg_tag }}</div>
+      {%- endif -%}
+      <div class="cc-hero__scrim" aria-hidden="true"></div>
+
+      <div class="cc-hero__overlay-content">
+        <div class="cc-hero__text">
+          <h1 class="cc-heading cc-heading--xl cc-hero__name">{{ section.settings.heading | escape }}</h1>
+          {%- if section.settings.text != blank -%}
+            <div class="cc-lede">{{ section.settings.text }}</div>
+          {%- endif -%}
+          <div class="cc-actions">
+            {%- if section.settings.button_label != blank -%}
+              <a class="button cc-hero__button" href="{{ section.settings.button_link | default: routes.all_products_collection_url }}">
+                {{- section.settings.button_label | escape -}}
+              </a>
+            {%- endif -%}
+            {%- if section.settings.link_label != blank -%}
+              <a class="cc-link cc-hero__link" href="{{ section.settings.link_url | default: '#' }}">
+                {{- section.settings.link_label | escape -}}
+              </a>
+            {%- endif -%}
+          </div>
+        </div>
+        {%- if section.settings.caption != blank -%}
+          <p class="cc-hero__credit">
+            {%- if pictured != blank -%}
+              <a href="{{ pictured.url }}">{{ section.settings.caption | escape }}</a>
+            {%- else -%}
+              {{ section.settings.caption | escape }}
+            {%- endif -%}
+          </p>
+        {%- endif -%}
+      </div>
+    </div>
+  </div>
+{%- else -%}
 
 <div class="section-background color-{{ section.settings.color_scheme }}"></div>
 <div
@@ -61,6 +136,7 @@
     </figure>
   </div>
 </div>
+{%- endif -%}
 
 {% stylesheet %}
   .cc-hero__grid {
@@ -113,6 +189,143 @@
       padding-bottom: var(--cc-space-5);
     }
   }
+
+  /* ---------- full background layout ---------- */
+  .cc-hero--full {
+    padding: 0;
+  }
+
+  .cc-hero__stage {
+    position: relative;
+    display: grid;
+    min-height: var(--cc-hero-h, 88svh);
+    overflow: hidden;
+    isolation: isolate;
+    background: var(--cc-ink);
+  }
+
+  .cc-hero--medium { --cc-hero-h: 72svh; }
+  .cc-hero--large { --cc-hero-h: 88svh; }
+  .cc-hero--screen { --cc-hero-h: calc(100svh - var(--header-height, 0px)); }
+
+  @media screen and (max-width: 749px) {
+    .cc-hero--medium { --cc-hero-h: 64svh; }
+    .cc-hero--large,
+    .cc-hero--screen { --cc-hero-h: 82svh; }
+  }
+
+  .cc-hero__bg,
+  .cc-hero__bg img,
+  .cc-hero__bg svg {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    z-index: -2;
+  }
+
+  .cc-hero__bg svg { fill: #6e6a65; background: #d9d6d1; }
+
+  .cc-hero__scrim {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+  }
+
+  .cc-hero--bottom-left .cc-hero__scrim {
+    background: linear-gradient(to top, rgb(20 19 18 / calc(var(--cc-overlay) + 0.4)) 0%, rgb(20 19 18 / calc(var(--cc-overlay) + 0.15)) 45%, rgb(20 19 18 / 0) 85%);
+  }
+
+  .cc-hero--center .cc-hero__scrim {
+    background: rgb(20 19 18 / var(--cc-overlay));
+  }
+
+  .cc-hero__overlay-content {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: var(--cc-space-3);
+    align-items: end;
+    width: 100%;
+    max-width: calc(var(--narrow-page-width, 1400px) + 80px);
+    margin-inline: auto;
+    padding: var(--cc-space-5) var(--page-margin, 16px) var(--cc-space-4);
+    color: #fff;
+  }
+
+  .cc-hero--center .cc-hero__overlay-content {
+    grid-template-columns: minmax(0, 1fr);
+    align-content: center;
+    justify-items: center;
+    text-align: center;
+  }
+
+  .cc-hero--center .cc-hero__text { justify-items: center; }
+  .cc-hero--center .cc-hero__name { max-width: 14ch; }
+  .cc-hero--center .cc-lede { margin-inline: auto; }
+  .cc-hero--center .cc-hero__credit { position: absolute; right: var(--page-margin, 16px); bottom: var(--cc-space-3); }
+
+  @media screen and (min-width: 750px) {
+    .cc-hero__overlay-content { padding-inline: 40px; padding-bottom: var(--cc-space-5); }
+    .cc-hero--center .cc-hero__credit { right: 40px; }
+  }
+
+  .cc-hero--full .cc-hero__name,
+  .cc-hero--full .cc-lede {
+    color: #fff;
+  }
+
+  .cc-hero--full .cc-hero__name {
+    max-width: 11ch;
+    font-size: clamp(3rem, 9vw, 7.5rem);
+    line-height: 0.95;
+    text-shadow: 0 1px 24px rgb(0 0 0 / 0.18);
+  }
+
+  .cc-hero--full .cc-lede {
+    max-width: 30rem;
+  }
+
+  .cc-hero--full .cc-hero__button {
+    --button-color: var(--cc-ink);
+    background: #fff;
+    color: var(--cc-ink);
+    border-color: #fff;
+  }
+
+  .cc-hero--full .cc-hero__button:hover {
+    background: var(--cc-wall);
+    border-color: var(--cc-wall);
+    color: var(--cc-ink);
+  }
+
+  .cc-hero--full .cc-hero__link {
+    color: #fff;
+  }
+
+  .cc-hero--full .cc-hero__link:hover { color: #fff; text-decoration-thickness: 2px; }
+
+  .cc-hero--full :focus-visible {
+    outline: 2px solid #fff;
+    outline-offset: 3px;
+  }
+
+  .cc-hero__credit {
+    margin: 0;
+    font-size: 0.8125rem;
+    color: rgb(255 255 255 / 0.85);
+    text-align: right;
+    max-width: 18rem;
+  }
+
+  .cc-hero__credit a { color: inherit; text-decoration: none; }
+  .cc-hero__credit a:hover { text-decoration: underline; text-underline-offset: 0.2em; }
+
+  @media screen and (max-width: 749px) {
+    .cc-hero__overlay-content { grid-template-columns: minmax(0, 1fr); }
+    .cc-hero__credit { text-align: left; }
+  }
 {% endstylesheet %}
 
 {% schema %}
@@ -120,6 +333,47 @@
   "name": "Artist hero",
   "class": "cc-hero-section",
   "settings": [
+    {
+      "type": "select",
+      "id": "layout",
+      "label": "Layout",
+      "options": [
+        { "value": "full", "label": "Full background image" },
+        { "value": "split", "label": "Text beside image" }
+      ],
+      "default": "full"
+    },
+    {
+      "type": "select",
+      "id": "height",
+      "label": "Height (full background)",
+      "options": [
+        { "value": "medium", "label": "Medium" },
+        { "value": "large", "label": "Large" },
+        { "value": "screen", "label": "Fill the screen" }
+      ],
+      "default": "large"
+    },
+    {
+      "type": "select",
+      "id": "text_position",
+      "label": "Text position (full background)",
+      "options": [
+        { "value": "bottom-left", "label": "Bottom left" },
+        { "value": "center", "label": "Center" }
+      ],
+      "default": "bottom-left"
+    },
+    {
+      "type": "range",
+      "id": "overlay",
+      "label": "Darken image behind text",
+      "min": 0,
+      "max": 60,
+      "step": 5,
+      "unit": "%",
+      "default": 30
+    },
     {
       "type": "text",
       "id": "heading",
@@ -162,7 +416,13 @@
       "type": "image_picker",
       "id": "image",
       "label": "Image",
-      "info": "Leave empty to use the main photo of the pictured product."
+      "info": "Leave empty to use the main photo of the pictured product. For the full background, use a wide photo at least 2400px across, and set its focal point in Files so the important part stays in view."
+    },
+    {
+      "type": "image_picker",
+      "id": "image_mobile",
+      "label": "Phone image (optional)",
+      "info": "A taller crop for phones, full background only."
     },
     {
       "type": "product",
