@@ -35,13 +35,16 @@
     "rooms": {
       "type": "cc-rooms",
       "settings": {
-        "heading": "The gallery rooms",
+        "heading": "Featured Collections",
         "note": "Each room gathers one body of work: the originals, and the prints and keepsakes made from them.",
         "menu": "",
         "collections": [
           "the-patriot-heritage-collection",
           "sports-and-mascots",
-          "seasonal-and-holiday-fine-art"
+          "seasonal-and-holiday-fine-art",
+          "puzzles",
+          "mugs",
+          "blankets"
         ],
         "columns": "3",
         "ratio": "4 / 5",
