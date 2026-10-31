@@ -12,24 +12,24 @@
     "hero": {
       "type": "cc-hero",
       "settings": {
+        "layout": "full",
+        "height": "large",
+        "text_position": "bottom-left",
+        "overlay": 30,
         "heading": "Claire Cahill",
         "text": "<p>Original paintings, fine art prints and keepsakes, made by hand in acrylic and oil.</p>",
         "button_label": "View the gallery",
         "button_link": "shopify://collections/all",
         "link_label": "Meet the artist",
         "link_url": "shopify://pages/about",
-        "image": "shopify://shop_images/FullSizeRender_d10ed6c1-cade-41e5-b997-c01ec412cde4.jpg",
+        "image": "shopify://shop_images/10346177356372139129_2048.jpg",
         "pictured_product": "",
         "caption": "",
         "ratio": "4 / 5",
         "contain": false,
         "color_scheme": "scheme-1",
         "padding_top": 48,
-        "padding_bottom": 96,
-        "layout": "full",
-        "height": "large",
-        "text_position": "bottom-left",
-        "overlay": 30
+        "padding_bottom": 96
       }
     },
     "rooms": {
