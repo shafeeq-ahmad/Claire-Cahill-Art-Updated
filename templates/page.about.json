@@ -12,10 +12,11 @@
     "intro": {
       "type": "cc-feature",
       "settings": {
+        "image": "shopify://shop_images/Claire-Cahill-Art-logo.jpg",
         "caption": "",
-        "image_side": "left",
-        "image_size": "large",
-        "ratio": "4 / 5",
+        "image_side": "right",
+        "image_size": "medium",
+        "ratio": "5 / 4",
         "contain": false,
         "heading": "About Claire",
         "is_page_title": true,
