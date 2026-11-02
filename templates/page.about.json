@@ -30,6 +30,7 @@
     },
     "flag": {
       "type": "cc-feature",
+      "disabled": true,
       "settings": {
         "image": "shopify://shop_images/IMG_0380.jpg",
         "caption": "American Flag, acrylic paint skins in a 5×7 acrylic block",
