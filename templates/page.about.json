@@ -114,7 +114,7 @@
       "settings": {
         "image": "shopify://shop_images/IMG_two_flags_outside22327.jpg",
         "caption": "",
-        "image_side": "right",
+        "image_side": "left",
         "image_size": "medium",
         "ratio": "5 / 4",
         "contain": false,
