@@ -50,6 +50,7 @@
     },
     "supporter": {
       "type": "cc-feature",
+      "disabled": true,
       "settings": {
         "caption": "",
         "image_side": "left",
