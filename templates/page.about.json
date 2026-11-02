@@ -112,10 +112,11 @@
     "close": {
       "type": "cc-feature",
       "settings": {
+        "image": "shopify://shop_images/IMG_two_flags_outside22327.jpg",
         "caption": "",
-        "image_side": "left",
+        "image_side": "right",
         "image_size": "medium",
-        "ratio": "4 / 5",
+        "ratio": "5 / 4",
         "contain": false,
         "heading": "See the work",
         "is_page_title": false,
